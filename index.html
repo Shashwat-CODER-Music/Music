@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shashwat CODERS Music</title>
+    <link rel="icon" href="logo.jpg" type="image/jpeg"> <!-- Favicon for browser title bar -->
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #121212, #2e2e2e);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header styling */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 20px;
+            border-radius: 50%;
+        }
+
+        /* Header title styling */
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .header h1 span {
+            color: #00d2d3;
+        }
+
+        .header h1 img {
+            margin-right: 10px;
+            height: 40px; /* Adjust to match the height of the title text */
+        }
+
+        /* Dark mode button styling */
+        .header .dark-mode-button {
+            background: #ffffff;
+            padding: 10px 20px;
+            color: #333;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+            margin-left: auto; /* Align button to the right */
+        }
+
+        .header .dark-mode-button:hover {
+            background: #f0f0f0;
+        }
+
+        /* Dark mode styling */
+        .dark-mode .header {
+            background: linear-gradient(90deg, #444, #666);
+        }
+
+        .dark-mode .header .dark-mode-button {
+            background: #333;
+            color: #eee;
+        }
+
+        .dark-mode .header .dark-mode-button:hover {
+            background: #444;
+        }
+
+        .dark-mode body {
+            background-color: #2e2e2e; /* Dark mode background color */
+            color: #f4f4f4; /* Dark mode text color */
+        }
+
+        /* Search container styling */
+        .search-container {
+            margin-top: 80px; /* Adjusted for header height */
+            text-align: center;
+            padding: 20px;
+        }
+
+        .search-container input {
+            padding: 15px 50px 15px 20px;
+            width: 80%;
+            max-width: 600px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+        }
+
+        .search-container input:focus {
+            border-color: #333;
+            outline: none;
+            background-color: #fafafa;
+        }
+
+        .search-container input::placeholder {
+            color: #999;
+        }
+
+        .dark-mode .search-container input {
+            border-color: #555;
+            background-color: #333;
+            color: #f0f0f0;
+        }
+
+        .dark-mode .search-container input::placeholder {
+            color: #aaa;
+        }
+
+        /* Content styling */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 40px; /* Increased gap between tracks */
+            margin-top: 20px;
+            padding-bottom: 80px; /* Ensure enough space for the fixed player */
+        }
+
+        /* Track styling */
+        .track {
+            background: #333;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .track:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .track img {
+            width: 100%;
+            height: 200px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            object-fit: cover;
+        }
+
+        .track h3 {
+            margin: 10px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Player container styling */
+        .player-container {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #222;
+            padding: 5px; /* Padding for shorter height */
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        audio {
+            width: 80%;
+            max-width: 800px;
+            height: 50px; /* Height of the audio player */
+            border-radius: 25px;
+            background: #333;
+        }
+
+        .dark-mode .player-container {
+            background-color: #111;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .search-container {
+                margin-top: 100px;
+            }
+
+            .search-container input {
+                width: 90%;
+                font-size: 14px;
+            }
+
+            .track {
+                width: 100%;
+                max-width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><img src="logo.jpg" alt="Logo"> Shashwat <span>CODERS</span> Music</h1>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search songs..." aria-label="Search songs">
+    </div>
+
+    <div class="content" id="trackList">
+        <!-- Track 1: Daku -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/daku.webm">
+            <img src="img/daku.jpeg" alt="Daku">
+            <h3>Daku</h3>
+        </div>
+        <!-- Track 2: Baller -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/baller.webm">
+            <img src="img/ball.jpeg" alt="Baller">
+            <h3>Baller</h3>
+        </div>
+        <!-- Track 3: Kingshit -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/kingshit.webm">
+            <img src="img/kshit.jpeg" alt="Kingshit">
+            <h3>Kingshit</h3>
+        </div>
+        <!-- Track 4: Excuses -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/excuses.webm">
+            <img src="img/excuses.jpeg" alt="Excuses">
+            <h3>Excuses</h3>
+        </div>
+        <!-- Track 5: Cheques -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/cheq.webm">
+            <img src="img/cheq.jpeg" alt="Cheques">
+            <h3>Cheques</h3>
+        </div>
+        <!-- Track 6: Still Rollin -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/Still%20Rollin.webm">
+            <img src="img/strlin.jpeg" alt="Still Rollin">
+            <h3>Still Rollin</h3>
+        </div>
+        <!-- Track 7: Brown Munde -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/brownm.webm">
+            <img src="img/brownm.jpeg" alt="Brown Munde">
+            <h3>Brown Munde</h3>
+        </div>
+        <!-- Track 8: We Rollin -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/welol.webm">
+            <img src="img/werlin.jpeg" alt="We Rollin">
+            <h3>We Rollin</h3>
+        </div>
+        <!-- Track 9: Sample Track 9 -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/295.weba">
+            <img src="img/295.jfif" alt="Sample Track 9">
+            <h3>295</h3>
+        </div>
+        <!-- Track 10: Sample Track 10 -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/drippy.weba">
+            <img src="img/drippy.jfif" alt="Sample Track 10">
+            <h3>Drippy</h3>
+        </div>
+        <!-- Track 11: The Last Ride -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/lrd.weba">
+            <img src="img/lrd.jfif" alt="The Last Ride">
+            <h3>The Last Ride</h3>
+        </div>
+        <!-- Track 12: Levels -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/level.webm">
+            <img src="img/level.jfif" alt="Levels">
+            <h3>Levels</h3>
+        </div>
+        <!-- Track 13: Fuck Em All -->
+        <div class="track" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/fea.webm">
+            <img src="img/fea.jpg" alt="Fuck Em All">
+            <h3>Fuck Em All</h3>
+        </div>
+    </div>
+
+    <div class="player-container">
+        <audio id="audioPlayer" controls aria-label="Audio Player">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchBar').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            const tracks = document.querySelectorAll('.track');
+            tracks.forEach(track => {
+                const title = track.querySelector('h3').textContent.toLowerCase();
+                track.style.display = title.includes(searchValue) ? 'block' : 'none';
+            });
+        });
+
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const button = document.querySelector('.dark-mode-button');
+            button.textContent = document.body.classList.contains('dark-mode') ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        }
+
+        // Track play functionality
+        document.querySelectorAll('.track').forEach(track => {
+            track.addEventListener('click', function() {
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = this.getAttribute('data-src');
+                audioPlayer.play();
+            });
+        });
+    </script>
+</body>
+</html>
