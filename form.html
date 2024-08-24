@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Submission Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .form-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+        p {
+            text-align: center;
+            color: #666;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 15px;
+        }
+        .form-group input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .result-message {
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .result-message.text-green-500 {
+            color: #28a745;
+        }
+        .result-message.text-red-500 {
+            color: #dc3545;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 15px;
+            }
+            .form-group input, .form-group textarea {
+                padding: 12px;
+            }
+            .form-group input[type="submit"] {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Song Submission Form</h1>
+        <p>Fill out the form below to submit your song.</p>
+        <form id="form">
+            <input type="hidden" name="access_key" value="9eb8246c-98c3-49c2-bbb5-447ef94e52d0" />
+            <input type="hidden" name="subject" value="New Submission from Web3Forms" />
+            <input type="checkbox" name="botcheck" id="" style="display: none;" />
+
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required />
+            </div>
+
+            <div class="form-group">
+                <label for="song_name">Song Name</label>
+                <input type="text" id="song_name" name="song_name" placeholder="Song Title" required />
+            </div>
+
+            <div class="form-group">
+                <label for="song_url">Song URL (optional)</label>
+                <input type="url" id="song_url" name="song_url" placeholder="https://example.com/song" />
+            </div>
+
+            <div class="form-group">
+                <label for="suggestions">Any Other Suggestions (optional)</label>
+                <textarea id="suggestions" name="suggestions" rows="4" placeholder="Your suggestions here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Submit" />
+            </div>
+            <p id="result" class="result-message"></p>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById("form");
+        const result = document.getElementById("result");
+
+        form.addEventListener("submit", function (e) {
+            const formData = new FormData(form);
+            e.preventDefault();
+            var object = {};
+            formData.forEach((value, key) => {
+                object[key] = value;
+            });
+            var json = JSON.stringify(object);
+            result.innerHTML = "Please wait...";
+            result.classList.remove("text-gray-500");
+            result.classList.remove("text-green-500");
+            result.classList.remove("text-red-500");
+
+            fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: json
+            })
+            .then(async (response) => {
+                let json = await response.json();
+                if (response.status == 200) {
+                    result.innerHTML = json.message;
+                    result.classList.add("text-green-500");
+                } else {
+                    result.innerHTML = json.message;
+                    result.classList.add("text-red-500");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                result.innerHTML = "Something went wrong!";
+                result.classList.add("text-red-500");
+            })
+            .then(function () {
+                form.reset();
+                setTimeout(() => {
+                    result.style.display = "none";
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
