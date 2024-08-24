@@ -146,6 +146,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .search-container {
             padding: 20px;
             background-color: #1e1e1e;
@@ -164,6 +165,29 @@
         .search-input:focus {
             outline: none;
             box-shadow: 0 0 0 2px #1db954;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background-color: #535353;
+            border-radius: 2px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #1db954;
+            border-radius: 2px;
+            width: 0;
+        }
+
+        .mobile-controls .progress-container {
+            position: absolute;
+            top: -4px;
+            left: 0;
+            right: 0;
         }
 
         @media (min-width: 769px) {
@@ -211,12 +235,18 @@
                 <button class="control-button" id="desktopPlayPauseButton">▶</button>
                 <button class="control-button" id="desktopNextButton">⏭</button>
             </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="desktopProgressBar"></div>
+            </div>
         </div>
     </div>
     <div class="mobile-controls">
         <button class="control-button" id="mobilePrevButton">⏮</button>
         <button class="control-button" id="mobilePlayPauseButton">▶</button>
         <button class="control-button" id="mobileNextButton">⏭</button>
+        <div class="progress-container">
+            <div class="progress-bar" id="mobileProgressBar"></div>
+        </div>
     </div>
 
     <script>
@@ -242,6 +272,9 @@
         const coverImage = document.getElementById('coverImage');
         const audioPlayer = new Audio();
         let currentTrackIndex = 0;
+
+        const desktopProgressBar = document.getElementById('desktopProgressBar');
+        const mobileProgressBar = document.getElementById('mobileProgressBar');
 
         // Populate track list
         tracks.forEach((track, index) => {
@@ -269,6 +302,10 @@
             playerTrackArtist.textContent = track.artist;
             coverImage.src = track.img;
             updatePlayPauseButton();
+
+            // Reset progress bar
+            desktopProgressBar.style.width = '0%';
+            mobileProgressBar.style.width = '0%';
         }
 
         function updatePlayPauseButton() {
@@ -296,6 +333,19 @@
             playTrack(currentTrackIndex);
         }
 
+        function updateProgressBar() {
+            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            desktopProgressBar.style.width = `${progress}%`;
+            mobileProgressBar.style.width = `${progress}%`;
+        }
+
+        function seekAudio(event, progressBar) {
+            const bounds = progressBar.getBoundingClientRect();
+            const x = event.clientX - bounds.left;
+            const percentage = x / bounds.width;
+            audioPlayer.currentTime = percentage * audioPlayer.duration;
+        }
+
         // Event listeners
         document.getElementById('desktopPrevButton').addEventListener('click', playPrevious);
         document.getElementById('desktopPlayPauseButton').addEventListener('click', togglePlayPause);
@@ -305,6 +355,10 @@
         document.getElementById('mobileNextButton').addEventListener('click', playNext);
 
         audioPlayer.addEventListener('ended', playNext);
+        audioPlayer.addEventListener('timeupdate', updateProgressBar);
+
+        desktopProgressBar.parentElement.addEventListener('click', (e) => seekAudio(e, desktopProgressBar.parentElement));
+        mobileProgressBar.parentElement.addEventListener('click', (e) => seekAudio(e, mobileProgressBar.parentElement));
     </script>
 </body>
 </html>
