@@ -496,6 +496,20 @@
             audioPlayer.currentTime = percentage * audioPlayer.duration;
         }
 
+searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    tracks.forEach(track => {
+        const title = track.querySelector('.track-title').textContent.toLowerCase();
+        const artist = track.querySelector('.track-artist').textContent.toLowerCase();
+        if (title.includes(query) || artist.includes(query)) {
+            track.style.display = '';
+        } else {
+            track.style.display = 'none';
+        }
+    });
+});
+
+        
         // Event listeners
         document.getElementById('desktopPrevButton').addEventListener('click', playPrevious);
         document.getElementById('desktopPlayPauseButton').addEventListener('click', togglePlayPause);
