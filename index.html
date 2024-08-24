@@ -107,7 +107,6 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            corner-radius: 3px;
         }
 
         .cover-image img {
@@ -220,7 +219,25 @@
                 <input type="text" id="searchInput" class="search-input" placeholder="Search songs...">
             </div>
             <ul class="track-list" id="trackList">
-                <!-- Tracks will be dynamically inserted here -->
+                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/daku.webm" data-img="daku.jpeg">
+                    <div class="track-icon">
+                        <img src="daku.jpeg" alt="Daku">
+                    </div>
+                    <div class="track-info">
+                        <h3 class="track-title">Daku</h3>
+                        <p class="track-artist">Unknown</p>
+                    </div>
+                </li>
+                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/baller.webm" data-img="ball.jpeg">
+                    <div class="track-icon">
+                        <img src="ball.jpeg" alt="Baller">
+                    </div>
+                    <div class="track-info">
+                        <h3 class="track-title">Baller</h3>
+                        <p class="track-artist">Unknown</p>
+                    </div>
+                </li>
+                <!-- Add more track items here -->
             </ul>
         </div>
         <div class="player">
@@ -251,22 +268,6 @@
     </div>
 
     <script>
-        const tracks = [
-            { title: "Daku", artist: "LATE SIDHU", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/daku.webm", img: "daku.jpeg" },
-            { title: "Baller", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/baller.webm", img: "ball.jpeg" },
-            { title: "Kingshit", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/kingshit.webm", img: "kshit.jpeg" },
-            { title: "Excuses", artist: "AP DHILLON", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/excuses.webm", img: "excuses.jpeg" },
-            { title: "Cheques", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/cheq.webm", img: "cheq.jpeg" },
-            { title: "Still Rollin", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/Still%20Rollin.webm", img: "strlin.jpeg" },
-            { title: "Brown Munde", artist: "AP DHILLON", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/brownm.webm", img: "brownm.jpeg" },
-            { title: "We Rollin", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/welol.webm", img: "werlin.jpeg" },
-            { title: "295", artist: "LATE SIDHU", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/295.weba", img: "295.jfif" },
-            { title: "Drippy", artist: "LATE SIDHU", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/drippy.weba", img: "drippy.jfif" },
-            { title: "The Last Ride", artist: "LATE SIDHU", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/lrd.weba", img: "lrd.jfif" },
-            { title: "Levels", artist: "LATE SIDHU", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/level.webm", img: "level.jfif" },
-            { title: "Fuck Em All", artist: "LATE SIDHU", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/fea.webm", img: "fea.jpg" }
-        ];
-
         const trackList = document.getElementById('trackList');
         const playerTrackTitle = document.getElementById('playerTrackTitle');
         const playerTrackArtist = document.getElementById('playerTrackArtist');
@@ -277,31 +278,20 @@
         const desktopProgressBar = document.getElementById('desktopProgressBar');
         const mobileProgressBar = document.getElementById('mobileProgressBar');
 
-        // Populate track list
+        const tracks = Array.from(trackList.getElementsByClassName('track-item'));
+
         tracks.forEach((track, index) => {
-            const li = document.createElement('li');
-            li.className = 'track-item';
-            li.innerHTML = `
-                <div class="track-icon">
-                    <img src="${track.img}" alt="${track.title}">
-                </div>
-                <div class="track-info">
-                    <h3 class="track-title">${track.title}</h3>
-                    <p class="track-artist">${track.artist}</p>
-                </div>
-            `;
-            li.addEventListener('click', () => playTrack(index));
-            trackList.appendChild(li);
+            track.addEventListener('click', () => playTrack(index));
         });
 
         function playTrack(index) {
             currentTrackIndex = index;
             const track = tracks[index];
-            audioPlayer.src = track.src;
+            audioPlayer.src = track.dataset.src;
             audioPlayer.play();
-            playerTrackTitle.textContent = track.title;
-            playerTrackArtist.textContent = track.artist;
-            coverImage.src = track.img;
+            playerTrackTitle.textContent = track.querySelector('.track-title').textContent;
+            playerTrackArtist.textContent = track.querySelector('.track-artist').textContent;
+            coverImage.src = track.dataset.img;
             updatePlayPauseButton();
 
             // Reset progress bar
