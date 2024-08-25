@@ -496,6 +496,65 @@
             fullscreenPlayer.style.display = 'none';
         }
 
+        //...
+
+// Progress bar functionality
+function updateProgressBar() {
+    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    progressBar.style.width = `${progress}%`;
+    fullscreenProgressBar.style.width = `${progress}%`;
+}
+
+// Make progress bar controllable
+let isMouseDown = false;
+let progressContainer = progressBar.parentElement;
+let fullscreenProgressContainer = fullscreenProgressBar.parentElement;
+
+progressContainer.addEventListener('mousedown', (event) => {
+    isMouseDown = true;
+    const bounds = progressContainer.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const percentage = x / bounds.width;
+    audioPlayer.currentTime = percentage * audioPlayer.duration;
+});
+
+progressContainer.addEventListener('mousemove', (event) => {
+    if (isMouseDown) {
+        const bounds = progressContainer.getBoundingClientRect();
+        const x = event.clientX - bounds.left;
+        const percentage = x / bounds.width;
+        audioPlayer.currentTime = percentage * audioPlayer.duration;
+    }
+});
+
+progressContainer.addEventListener('mouseup', () => {
+    isMouseDown = false;
+});
+
+// Same for fullscreen progress bar
+fullscreenProgressContainer.addEventListener('mousedown', (event) => {
+    isMouseDown = true;
+    const bounds = fullscreenProgressContainer.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const percentage = x / bounds.width;
+    audioPlayer.currentTime = percentage * audioPlayer.duration;
+});
+
+fullscreenProgressContainer.addEventListener('mousemove', (event) => {
+    if (isMouseDown) {
+        const bounds = fullscreenProgressContainer.getBoundingClientRect();
+        const x = event.clientX - bounds.left;
+        const percentage = x / bounds.width;
+        audioPlayer.currentTime = percentage * audioPlayer.duration;
+    }
+});
+
+fullscreenProgressContainer.addEventListener('mouseup', () => {
+    isMouseDown = false;
+});
+
+//...
+
         // Event listeners
         document.getElementById('prevButton').addEventListener('click', playPrevious);
         document.getElementById('playPauseButton').addEventListener('click', togglePlayPause);
