@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shashwat CODERS Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #fff;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #030303;
+            color: #fff;
         }
 
         .container {
@@ -18,112 +23,140 @@
             height: 100vh;
         }
 
+        .sidebar {
+            width: 240px;
+            background-color: #030303;
+            padding: 20px;
+            border-right: 1px solid #282828;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #ff0000;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: #282828;
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+        }
+
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 80px; /* Space for mobile controls */
-        }
-
-        .header {
-            background-color: #1e1e1e;
             padding: 20px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 20px;
+            background-color: #121212;
+            color: #fff;
         }
 
         .track-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
         }
 
         .track-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 1px solid #282828;
+            background-color: #181818;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
         }
 
         .track-item:hover {
-            background-color: #282828;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
         }
 
-        .track-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #333;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .track-icon img {
+        .track-image {
             width: 100%;
-            height: 100%;
+            aspect-ratio: 1;
             object-fit: cover;
         }
 
         .track-info {
-            flex-grow: 1;
+            padding: 15px;
         }
 
         .track-title {
             font-size: 16px;
-            margin: 0;
+            font-weight: 500;
+            margin-bottom: 5px;
         }
 
         .track-artist {
             font-size: 14px;
             color: #b3b3b3;
-            margin: 0;
         }
 
         .player {
-            width: 300px;
-            background-color: #282828;
-            padding: 20px;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .cover-image {
-            width: 250px;
-            height: 250px;
-            margin-bottom: 20px;
-            background-color: #333;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #181818;
+            padding: 15px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-
-        .cover-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            justify-content: space-between;
+            z-index: 1000;
         }
 
         .player-info {
-            text-align: center;
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .player-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-right: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .player-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .player-artist {
+            font-size: 12px;
+            color: #b3b3b3;
         }
 
         .player-controls {
             display: flex;
-            justify-content: center;
             align-items: center;
         }
 
@@ -134,295 +167,218 @@
             font-size: 24px;
             margin: 0 15px;
             cursor: pointer;
+            transition: color 0.3s;
         }
 
-        .mobile-controls {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #282828;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .search-container {
-            padding: 20px;
-            background-color: #1e1e1e;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 20px;
-            background-color: #333;
-            color: #fff;
-        }
-
-        .search-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px #1db954;
+        .control-button:hover {
+            color: #ff0000;
         }
 
         .progress-container {
-            width: 100%;
+            flex: 1;
             height: 4px;
             background-color: #535353;
             border-radius: 2px;
-            margin-top: 10px;
+            margin: 0 20px;
             cursor: pointer;
+            position: relative;
         }
 
         .progress-bar {
             height: 100%;
-            background-color: #1db954;
+            background-color: #ff0000;
             border-radius: 2px;
             width: 0;
         }
 
-        .mobile-controls .progress-container {
-            position: absolute;
-            top: -4px;
+        .fullscreen-player {
+            position: fixed;
+            top: 0;
             left: 0;
             right: 0;
+            bottom: 0;
+            background-color: #030303;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        @media (min-width: 769px) {
-            .player {
-                display: flex;
-            }
-            .mobile-controls {
-                display: none;
-            }
+        .fullscreen-image {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .fullscreen-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .fullscreen-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .fullscreen-artist {
+            font-size: 18px;
+            color: #b3b3b3;
+        }
+
+        .fullscreen-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .fullscreen-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 36px;
+            margin: 0 20px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .fullscreen-button:hover {
+            color: #ff0000;
+            transform: scale(1.1);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .back-button:hover {
+            color: #ff0000;
+        }
+
+        .fullscreen-progress-container {
+            width: 80%;
+            height: 4px;
+            background-color: #535353;
+            border-radius: 2px;
+            margin-top: 30px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .fullscreen-progress-bar {
+            height: 100%;
+            background-color: #ff0000;
+            border-radius: 2px;
+            width: 0;
         }
 
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
             }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #282828;
+            }
+
             .player {
-                display: none;
+                flex-direction: column;
+                padding-bottom: 20px;
+            }
+
+            .player-info {
+                margin-bottom: 15px;
+            }
+
+            .progress-container {
+                width: 100%;
+                margin: 15px 0;
+            }
+
+            .fullscreen-image {
+                width: 200px;
+                height: 200px;
+            }
+
+            .fullscreen-title {
+                font-size: 20px;
+            }
+
+            .fullscreen-artist {
+                font-size: 16px;
+            }
+
+            .fullscreen-button {
+                font-size: 30px;
+                margin: 0 15px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="sidebar">
+            <div class="logo">Shashwat CODERS Music</div>
+            <div class="nav-item"><i>🏠</i> Home</div>
+            <div class="nav-item"><i>🔍</i> Search</div>
+            <div class="nav-item"><i>📚</i> Your Library</div>
+        </div>
         <div class="main-content">
-            <div class="header">
-                <h1>Shashwat CODERS Music</h1>
-                <h3>To add your favourite song click <a href="form.html">HERE</a></h3>
-            </div>
             <div class="search-container">
                 <input type="text" id="searchInput" class="search-input" placeholder="Search songs...">
             </div>
-            <ul class="track-list" id="trackList">
-               <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/jtj.webm" data-img="jtj.jpeg">
-                    <div class="track-icon">
-                        <img src="jtj.jpeg" alt="Daku">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Jane teri janeman</h3>
-                        <p class="track-artist">BADSHAH</p>
-                    </div>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/daku.webm" data-img="daku.jpeg">
-                    <div class="track-icon">
-                        <img src="daku.jpeg" alt="Daku">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Daku</h3>
-                        <p class="track-artist">LATE SIDHU MOOSE WALA</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/baller.webm" data-img="ball.jpeg">
-                    <div class="track-icon">
-                        <img src="ball.jpeg" alt="Baller">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Baller</h3>
-                        <p class="track-artist">SHUBH</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/kingshit.webm" data-img="kshit.jpeg">
-                    <div class="track-icon">
-                        <img src="kshit.jpeg" alt="Kingshit">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Kingshit</h3>
-                        <p class="track-artist">SHUBH</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/excuses.webm" data-img="excuses.jpeg">
-                    <div class="track-icon">
-                        <img src="excuses.jpeg" alt="Excuses">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Excuses</h3>
-                        <p class="track-artist">AP DHILLON</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/cheq.webm" data-img="cheq.jpeg">
-                    <div class="track-icon">
-                        <img src="cheq.jpeg" alt="Cheques">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Cheques</h3>
-                        <p class="track-artist">SHUBH</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/Still%20Rollin.webm" data-img="strlin.jpeg">
-                    <div class="track-icon">
-                        <img src="strlin.jpeg" alt="Still Rollin">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Still Rollin</h3>
-                        <p class="track-artist">SHUBH</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/brownm.webm" data-img="brownm.jpeg">
-                    <div class="track-icon">
-                        <img src="brownm.jpeg" alt="Brown Munde">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Brown Munde</h3>
-                        <p class="track-artist">AP DHILLON</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/welol.webm" data-img="werlin.jpeg">
-                    <div class="track-icon">
-                        <img src="werlin.jpeg" alt="We Rollin">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">We Rollin</h3>
-                        <p class="track-artist">SHUBH</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/295.weba" data-img="295.jfif">
-                    <div class="track-icon">
-                        <img src="295.jfif" alt="295">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">295</h3>
-                        <p class="track-artist">LATE SIDHU MOOSE WALA</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/drippy.weba" data-img="drippy.jfif">
-                    <div class="track-icon">
-                        <img src="drippy.jfif" alt="Drippy">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Drippy</h3>
-                        <p class="track-artist">LATE SIDHU MOOSE WALA</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/lrd.weba" data-img="lrd.jfif">
-                    <div class="track-icon">
-                        <img src="lrd.jfif" alt="The Last Ride">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">The Last Ride</h3>
-                        <p class="track-artist">LATE SIDHU MOOSE WALA</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/level.webm" data-img="level.jfif">
-                    <div class="track-icon">
-                        <img src="level.jfif" alt="Levels">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Levels</h3>
-                        <p class="track-artist">LATE SIDHU MOOSE WALA</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/fea.webm" data-img="fea.jpg">
-                    <div class="track-icon">
-                        <img src="fea.jpg" alt="Fuck Em All">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Fuck Em All</h3>
-                        <p class="track-artist">LATE SIDHU MOOSE WALA</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/12.webm" data-img="12.jpg">
-                    <div class="track-icon">
-                        <img src="12.jpg" alt="Fuck Em All">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">12 Bande</h3>
-                        <p class="track-artist">VARINDER BRAR</p>
-                    </div>
-                    </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/945.webm" data-img="945.jpeg">
-                    <div class="track-icon">
-                        <img src="945.jpeg" alt="9:45">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">9:45</h3>
-                        <p class="track-artist">PRABHA</p>
-                 <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/og.webm" data-img="og.jpeg">
-                    <div class="track-icon">
-                        <img src="og.jpeg" alt="9:45">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">OG</h3>
-                        <p class="track-artist">SHUBH</p>
-                    </div>
-                 <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/el.webm" data-img="el.jpeg">
-                    <div class="track-icon">
-                        <img src="el.jpeg" alt="9:45">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Elevated</h3>
-                        <p class="track-artist">SHUBH</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/100.webm" data-img="100.jpeg">
-                    <div class="track-icon">
-                        <img src="100.jpeg" alt="9:45">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">0 to 100</h3>
-                        <p class="track-artist">LATE SIDHU MOOSE WALA</p>
-                    </div>
-                </li>
-                <li class="track-item" data-src="https://shashwat-coding.github.io/Shashwat-CODER-Music/tm.webm" data-img="tm.jpeg">
-                    <div class="track-icon">
-                        <img src="tm.jpeg" alt="9:45">
-                    </div>
-                    <div class="track-info">
-                        <h3 class="track-title">Kesaria</h3>
-                        <p class="track-artist">B PRAAK</p>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="player">
-            <div class="cover-image">
-                <img id="coverImage" src="ntg.png" alt="Album Cover">
-            </div>
-            <div class="player-info">
-                <h2 id="playerTrackTitle">Select a track</h2>
-                <p id="playerTrackArtist">Unknown</p>
-            </div>
-            <div class="player-controls">
-                <button class="control-button" id="desktopPrevButton">⏮</button>
-                <button class="control-button" id="desktopPlayPauseButton">▶</button>
-                <button class="control-button" id="desktopNextButton">⏭</button>
-            </div>
-            <div class="progress-container">
-                <div class="progress-bar" id="desktopProgressBar"></div>
+            <div class="track-list" id="trackList">
+                <!-- Track items will be dynamically added here -->
             </div>
         </div>
     </div>
-    <div class="mobile-controls">
-        <button class="control-button" id="mobilePrevButton">⏮</button>
-        <button class="control-button" id="mobilePlayPauseButton">▶</button>
-        <button class="control-button" id="mobileNextButton">⏭</button>
+
+    <div class="player">
+        <div class="player-info">
+            <img id="playerImage" class="player-image" src="ntg.png" alt="Album Cover">
+            <div class="player-text">
+                <div id="playerTrackTitle" class="player-title">Select a track</div>
+                <div id="playerTrackArtist" class="player-artist">Unknown</div>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button class="control-button" id="prevButton">⏮</button>
+            <button class="control-button" id="playPauseButton">▶</button>
+            <button class="control-button" id="nextButton">⏭</button>
+        </div>
         <div class="progress-container">
-            <div class="progress-bar" id="mobileProgressBar"></div>
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <div class="fullscreen-player" id="fullscreenPlayer">
+        <button class="back-button" id="backButton">←</button>
+        <img id="fullscreenImage" class="fullscreen-image" src="ntg.png" alt="Album Cover">
+        <div class="fullscreen-info">
+            <div id="fullscreenTrackTitle" class="fullscreen-title">Select a track</div>
+            <div id="fullscreenTrackArtist" class="fullscreen-artist">Unknown</div>
+        </div>
+        <div class="fullscreen-controls">
+            <button class="fullscreen-button" id="fullscreenPrevButton">⏮</button>
+            <button class="fullscreen-button" id="fullscreenPlayPauseButton">▶</button>
+            <button class="fullscreen-button" id="fullscreenNextButton">⏭</button>
+        </div>
+        <div class="fullscreen-progress-container">
+            <div class="fullscreen-progress-bar" id="fullscreenProgressBar"></div>
         </div>
     </div>
 
@@ -430,38 +386,75 @@
         const trackList = document.getElementById('trackList');
         const playerTrackTitle = document.getElementById('playerTrackTitle');
         const playerTrackArtist = document.getElementById('playerTrackArtist');
-        const coverImage = document.getElementById('coverImage');
+        const playerImage = document.getElementById('playerImage');
+        const fullscreenPlayer = document.getElementById('fullscreenPlayer');
+        const fullscreenTrackTitle = document.getElementById('fullscreenTrackTitle');
+        const fullscreenTrackArtist = document.getElementById('fullscreenTrackArtist');
+        const fullscreenImage = document.getElementById('fullscreenImage');
         const audioPlayer = new Audio();
         let currentTrackIndex = 0;
 
-        const desktopProgressBar = document.getElementById('desktopProgressBar');
-        const mobileProgressBar = document.getElementById('mobileProgressBar');
+        const progressBar = document.getElementById('progressBar');
+        const fullscreenProgressBar = document.getElementById('fullscreenProgressBar');
 
-        const tracks = Array.from(trackList.getElementsByClassName('track-item'));
+        const tracks = [
+            { title: "Jane teri janeman", artist: "BADSHAH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/jtj.webm", img: "jtj.jpeg" },
+            { title: "Daku", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/daku.webm", img: "daku.jpeg" },
+            { title: "Baller", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/baller.webm", img: "ball.jpeg" },
+            { title: "Kingshit", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/kingshit.webm", img: "kshit.jpeg" },
+            { title: "Excuses", artist: "AP DHILLON", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/excuses.webm", img: "excuses.jpeg" },
+            { title: "Cheques", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/cheq.webm", img: "cheq.jpeg" },
+            { title: "Still Rollin", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/Still%20Rollin.webm", img: "strlin.jpeg" },
+            { title: "Brown Munde", artist: "AP DHILLON", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/brownm.webm", img: "brownm.jpeg" },
+            { title: "We Rollin", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/welol.webm", img: "werlin.jpeg" },
+            { title: "295", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/295.weba", img: "295.jfif" },
+            { title: "Drippy", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/drippy.weba", img: "drippy.jfif" },
+            { title: "The Last Ride", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/lrd.weba", img: "lrd.jfif" },
+            { title: "Levels", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/level.webm", img: "level.jfif" },
+            { title: "Fuck Em All", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/fea.webm", img: "fea.jpg" },
+        ];
+
+        function createTrackElement(track, index) {
+            const trackElement = document.createElement('div');
+            trackElement.classList.add('track-item');
+            trackElement.innerHTML = `
+                <img class="track-image" src="${track.img}" alt="${track.title}">
+                <div class="track-info">
+                    <div class="track-title">${track.title}</div>
+                    <div class="track-artist">${track.artist}</div>
+                </div>
+            `;
+            trackElement.addEventListener('click', () => playTrack(index));
+            return trackElement;
+        }
 
         tracks.forEach((track, index) => {
-            track.addEventListener('click', () => playTrack(index));
+            trackList.appendChild(createTrackElement(track, index));
         });
 
         function playTrack(index) {
             currentTrackIndex = index;
             const track = tracks[index];
-            audioPlayer.src = track.dataset.src;
+            audioPlayer.src = track.src;
             audioPlayer.play();
-            playerTrackTitle.textContent = track.querySelector('.track-title').textContent;
-            playerTrackArtist.textContent = track.querySelector('.track-artist').textContent;
-            coverImage.src = track.dataset.img;
+            updateTrackInfo(track);
             updatePlayPauseButton();
+            showFullscreenPlayer();
+        }
 
-            // Reset progress bar
-            desktopProgressBar.style.width = '0%';
-            mobileProgressBar.style.width = '0%';
+        function updateTrackInfo(track) {
+            playerTrackTitle.textContent = track.title;
+            playerTrackArtist.textContent = track.artist;
+            playerImage.src = track.img;
+            fullscreenTrackTitle.textContent = track.title;
+            fullscreenTrackArtist.textContent = track.artist;
+            fullscreenImage.src = track.img;
         }
 
         function updatePlayPauseButton() {
             const isPlaying = !audioPlayer.paused;
-            document.getElementById('desktopPlayPauseButton').textContent = isPlaying ? '⏸' : '▶';
-            document.getElementById('mobilePlayPauseButton').textContent = isPlaying ? '⏸' : '▶';
+            playPauseButton.textContent = isPlaying ? '⏸' : '▶';
+            fullscreenPlayPauseButton.textContent = isPlaying ? '⏸' : '▶';
         }
 
         function togglePlayPause() {
@@ -485,44 +478,48 @@
 
         function updateProgressBar() {
             const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-            desktopProgressBar.style.width = `${progress}%`;
-            mobileProgressBar.style.width = `${progress}%`;
+            progressBar.style.width = `${progress}%`;
         }
 
-        function seekAudio(event, progressBar) {
-            const bounds = progressBar.getBoundingClientRect();
+        function seekAudio(event) {
+            const bounds = progressBar.parentElement.getBoundingClientRect();
             const x = event.clientX - bounds.left;
             const percentage = x / bounds.width;
             audioPlayer.currentTime = percentage * audioPlayer.duration;
         }
 
-searchInput.addEventListener('input', () => {
-    const query = searchInput.value.toLowerCase();
-    tracks.forEach(track => {
-        const title = track.querySelector('.track-title').textContent.toLowerCase();
-        const artist = track.querySelector('.track-artist').textContent.toLowerCase();
-        if (title.includes(query) || artist.includes(query)) {
-            track.style.display = '';
-        } else {
-            track.style.display = 'none';
+        function showFullscreenPlayer() {
+            fullscreenPlayer.style.display = 'flex';
         }
-    });
-});
 
-        
+        function hideFullscreenPlayer() {
+            fullscreenPlayer.style.display = 'none';
+        }
+
         // Event listeners
-        document.getElementById('desktopPrevButton').addEventListener('click', playPrevious);
-        document.getElementById('desktopPlayPauseButton').addEventListener('click', togglePlayPause);
-        document.getElementById('desktopNextButton').addEventListener('click', playNext);
-        document.getElementById('mobilePrevButton').addEventListener('click', playPrevious);
-        document.getElementById('mobilePlayPauseButton').addEventListener('click', togglePlayPause);
-        document.getElementById('mobileNextButton').addEventListener('click', playNext);
+        document.getElementById('prevButton').addEventListener('click', playPrevious);
+        document.getElementById('playPauseButton').addEventListener('click', togglePlayPause);
+        document.getElementById('nextButton').addEventListener('click', playNext);
+        document.getElementById('fullscreenPrevButton').addEventListener('click', playPrevious);
+        document.getElementById('fullscreenPlayPauseButton').addEventListener('click', togglePlayPause);
+        document.getElementById('fullscreenNextButton').addEventListener('click', playNext);
+        document.getElementById('backButton').addEventListener('click', hideFullscreenPlayer);
 
         audioPlayer.addEventListener('ended', playNext);
         audioPlayer.addEventListener('timeupdate', updateProgressBar);
 
-        desktopProgressBar.parentElement.addEventListener('click', (e) => seekAudio(e, desktopProgressBar.parentElement));
-        mobileProgressBar.parentElement.addEventListener('click', (e) => seekAudio(e, mobileProgressBar.parentElement));
+        progressBar.parentElement.addEventListener('click', seekAudio);
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            trackList.innerHTML = '';
+            tracks.forEach((track, index) => {
+                if (track.title.toLowerCase().includes(query) || track.artist.toLowerCase().includes(query)) {
+                    trackList.appendChild(createTrackElement(track, index));
+                }
+            });
+        });
     </script>
 </body>
 </html>
