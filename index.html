@@ -28,6 +28,7 @@
             background-color: #030303;
             padding: 20px;
             border-right: 1px solid #282828;
+            transition: transform 0.3s ease-in-out;
         }
 
         .logo {
@@ -284,20 +285,71 @@
             width: 0;
         }
 
+        .header {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #030303;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .header-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff0000;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
             }
 
             .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #282828;
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                transform: translateX(-100%);
+                z-index: 1002;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .header {
+                display: flex;
+            }
+
+            .main-content {
+                padding-top: 60px;
+            }
+
+            .track-list {
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .player {
                 flex-direction: column;
-                padding-bottom: 20px;
+                padding-bottom: 10px;
+                height: 60px;
+                overflow: hidden;
+                transition: height 0.3s ease-in-out;
+            }
+
+            .player.expanded {
+                height: 100vh;
             }
 
             .player-info {
@@ -330,8 +382,13 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <button class="menu-button" id="menuButton">☰</button>
+        <div class="header-logo">S-CODERS Studio</div>
+        <div></div>
+    </div>
     <div class="container">
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="logo">S-CODERS Studio</div>
             <div class="nav-item"><i>➕</i><a href="form.html"> Add your favourite song</a></div>
         </div>
@@ -345,7 +402,7 @@
         </div>
     </div>
 
-    <div class="player">
+    <div class="player" id="player">
         <div class="player-info">
             <img id="playerImage" class="player-image" src="ntg.png" alt="Album Cover">
             <div class="player-text">
@@ -406,7 +463,7 @@
             { title: "Brown Munde", artist: "AP DHILLON", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/brownm.webm", img: "brownm.jpeg" },
             { title: "We Rollin", artist: "SHUBH", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/welol.webm", img: "werlin.jpeg" },
             { title: "295", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/295.weba", img: "295.jfif" },
-            { title: "Drippy", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/drippy.weba", img: "drippy.jfif" },
+{ title: "Drippy", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/drippy.weba", img: "drippy.jfif" },
             { title: "The Last Ride", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/lrd.weba", img: "lrd.jfif" },
             { title: "Levels", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/level.webm", img: "level.jfif" },
             { title: "Fuck Em All", artist: "LATE SIDHU MOOSE WALA", src: "https://shashwat-coding.github.io/Shashwat-CODER-Music/fea.webm", img: "fea.jpg" },
@@ -478,10 +535,11 @@
         function updateProgressBar() {
             const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
             progressBar.style.width = `${progress}%`;
+            fullscreenProgressBar.style.width = `${progress}%`;
         }
 
-        function seekAudio(event) {
-            const bounds = progressBar.parentElement.getBoundingClientRect();
+        function seekAudio(event, container) {
+            const bounds = container.getBoundingClientRect();
             const x = event.clientX - bounds.left;
             const percentage = x / bounds.width;
             audioPlayer.currentTime = percentage * audioPlayer.duration;
@@ -489,70 +547,48 @@
 
         function showFullscreenPlayer() {
             fullscreenPlayer.style.display = 'flex';
+            document.getElementById('player').classList.add('expanded');
         }
 
         function hideFullscreenPlayer() {
             fullscreenPlayer.style.display = 'none';
+            document.getElementById('player').classList.remove('expanded');
         }
 
-        //...
+        // Progress bar functionality
+        let isMouseDown = false;
+        let progressContainer = progressBar.parentElement;
+        let fullscreenProgressContainer = fullscreenProgressBar.parentElement;
 
-// Progress bar functionality
-function updateProgressBar() {
-    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-    progressBar.style.width = `${progress}%`;
-    fullscreenProgressBar.style.width = `${progress}%`;
-}
+        progressContainer.addEventListener('mousedown', (event) => {
+            isMouseDown = true;
+            seekAudio(event, progressContainer);
+        });
 
-// Make progress bar controllable
-let isMouseDown = false;
-let progressContainer = progressBar.parentElement;
-let fullscreenProgressContainer = fullscreenProgressBar.parentElement;
+        progressContainer.addEventListener('mousemove', (event) => {
+            if (isMouseDown) {
+                seekAudio(event, progressContainer);
+            }
+        });
 
-progressContainer.addEventListener('mousedown', (event) => {
-    isMouseDown = true;
-    const bounds = progressContainer.getBoundingClientRect();
-    const x = event.clientX - bounds.left;
-    const percentage = x / bounds.width;
-    audioPlayer.currentTime = percentage * audioPlayer.duration;
-});
+        progressContainer.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
 
-progressContainer.addEventListener('mousemove', (event) => {
-    if (isMouseDown) {
-        const bounds = progressContainer.getBoundingClientRect();
-        const x = event.clientX - bounds.left;
-        const percentage = x / bounds.width;
-        audioPlayer.currentTime = percentage * audioPlayer.duration;
-    }
-});
+        fullscreenProgressContainer.addEventListener('mousedown', (event) => {
+            isMouseDown = true;
+            seekAudio(event, fullscreenProgressContainer);
+        });
 
-progressContainer.addEventListener('mouseup', () => {
-    isMouseDown = false;
-});
+        fullscreenProgressContainer.addEventListener('mousemove', (event) => {
+            if (isMouseDown) {
+                seekAudio(event, fullscreenProgressContainer);
+            }
+        });
 
-// Same for fullscreen progress bar
-fullscreenProgressContainer.addEventListener('mousedown', (event) => {
-    isMouseDown = true;
-    const bounds = fullscreenProgressContainer.getBoundingClientRect();
-    const x = event.clientX - bounds.left;
-    const percentage = x / bounds.width;
-    audioPlayer.currentTime = percentage * audioPlayer.duration;
-});
-
-fullscreenProgressContainer.addEventListener('mousemove', (event) => {
-    if (isMouseDown) {
-        const bounds = fullscreenProgressContainer.getBoundingClientRect();
-        const x = event.clientX - bounds.left;
-        const percentage = x / bounds.width;
-        audioPlayer.currentTime = percentage * audioPlayer.duration;
-    }
-});
-
-fullscreenProgressContainer.addEventListener('mouseup', () => {
-    isMouseDown = false;
-});
-
-//...
+        fullscreenProgressContainer.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
 
         // Event listeners
         document.getElementById('prevButton').addEventListener('click', playPrevious);
@@ -566,8 +602,6 @@ fullscreenProgressContainer.addEventListener('mouseup', () => {
         audioPlayer.addEventListener('ended', playNext);
         audioPlayer.addEventListener('timeupdate', updateProgressBar);
 
-        progressBar.parentElement.addEventListener('click', seekAudio);
-
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
@@ -577,6 +611,29 @@ fullscreenProgressContainer.addEventListener('mouseup', () => {
                     trackList.appendChild(createTrackElement(track, index));
                 }
             });
+        });
+
+        // Mobile sidebar functionality
+        const menuButton = document.getElementById('menuButton');
+        const sidebar = document.getElementById('sidebar');
+
+        menuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!sidebar.contains(event.target) && !menuButton.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Expand player on click for mobile
+        const player = document.getElementById('player');
+        player.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                showFullscreenPlayer();
+            }
         });
     </script>
 </body>
