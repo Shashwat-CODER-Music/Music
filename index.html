@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify UI Clone with Player</title>
+    <title>S-Codify UI Clone with Player</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <style>
         * {
@@ -29,6 +29,11 @@
         }
         .sidebar .logo img {
             width: 130px;
+        }
+        .sidebar .logo h2 {
+            color: #ffffff;
+            font-size: 24px;
+            margin-top: 10px;
         }
         .sidebar .navigation ul {
             list-style: none;
@@ -152,11 +157,11 @@
             padding-bottom: 20px;
         }
         .spotify-playlists .list .item {
-            min-width: 140px;
-            width: 160px;
+            min-width: 225px;
+            width: 225px;
             padding: 15px;
             background-color: #181818;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all ease 0.4s;
         }
@@ -314,16 +319,24 @@
             background-color: #b3b3b3;
             transition: width 0.1s linear;
         }
-        .player .volume-control {
-            display: flex;
-            align-items: center;
+
+        /* Search bar styles */
+        .search-bar {
+            display: none;
+            background-color: #282828;
+            padding: 10px;
+            margin-top: 10px;
         }
-        .player .volume-control i {
-            color: #b3b3b3;
-            margin-right: 10px;
+        .search-bar input {
+            width: 100%;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3e3e3e;
+            color: #fff;
         }
-        .player .volume-control input {
-            width: 100px;
+        .search-results {
+            margin-top: 10px;
         }
 
         /* Mobile Responsive Styles */
@@ -399,19 +412,14 @@
                 width: 100%;
                 margin: 10px 0;
             }
-            .player .volume-control {
-                width: 100%;
-                justify-content: center;
-            }
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="logo">
-            <a href="#">
-                <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png" alt="Logo" />
-            </a>
+            <img src="logo.jpg" alt="Logo" />
+            <h2>S-Codify</h2>
         </div>
 
         <div class="navigation">
@@ -423,7 +431,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#" id="search-link">
                         <span class="fa fa-search"></span>
                         <span>Search</span>
                     </a>
@@ -454,6 +462,11 @@
             </ul>
         </div>
 
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search for songs...">
+            <div class="search-results"></div>
+        </div>
+
         <div class="policies">
             <ul>
                 <li><a href="#">Legal</a></li>
@@ -479,226 +492,219 @@
             <div class="navbar">
                 <ul>
                     <li>
-                        <a href="#">Premium</a>
-                    </li>
-                    <li>
-                        <a href="#">Support</a>
-                    </li>
-                    <li>
-                        <a href="#">Download</a>
-                    </li>
-                    <li class="divider">|</li>
-                    <li><a href="#">Sign Up</a></li>
-                </ul>
-                <button type="button">Log In</button>
-            </div>
-        </div>
-
-        <div class="spotify-playlists">
-            <h2>Focus</h2>
-            <div class="list" id="focus-playlist">
-                <!-- Playlist items will be dynamically added here -->
-            </div>
-
-            <h2>Spotify Playlists</h2>
-            <div class="list" id="spotify-playlist">
-                <!-- Playlist items will be dynamically added here -->
-            </div>
-
-            <h2>Categorized by Artist</h2>
-            <div id="artist-playlists">
-                <!-- Artist playlists will be dynamically added here -->
-            </div>
-        </div>
-    </div>
-
-    <div class="player">
-        <div class="song-info">
-            <img src="https://via.placeholder.com/60" alt="Current Song" id="current-song-image">
-            <div class="details">
-                <h4 id="current-song-title">Song Title</h4>
-                <p id="current-song-artist">Artist Name</p>
-            </div>
-        </div>
-        <div class="controls">
-            <button id="prev-button"><i class="fas fa-step-backward"></i></button>
-            <button id="play-pause-button" class="play-pause"><i class="fas fa-play"></i></button>
-            <button id="next-button"><i class="fas fa-step-forward"></i></button>
-        </div>
-        <div class="progress-bar">
-            <div class="bar">
-                <div class="fill" id="progress-fill"></div>
-            </div>
-        </div>
-        <div class="volume-control">
-            <i class="fas fa-volume-up"></i>
-            <input type="range" id="volume-slider" min="0" max="100" value="100">
-        </div>
-    </div>
-
-    <script>
-        // Simulated song data (in a real app, this would come from a backend)
-        const songs = [
-    { title: "Babam bam", artist: "PARADOX", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/bb.webm", image: "bb.jpg" },
-    { title: "Kesaria", artist: "B PRAAK", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/tm.webm", image: "tm.jpeg" },
-    { title: "Daku", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/daku.webm", image: "daku.jpeg" },
-    { title: "Elevated", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/el.webm", image: "el.jpeg" },
-    { title: "12 Bande", artist: "VARINDAR BRAR", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/12.webm", image: "12.jpg" },
-    { title: "Baller", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/baller.webm", image: "ball.jpeg" },
-    { title: "Kingshit", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/kingshit.webm", image: "kshit.jpeg" },
-    { title: "Excuses", artist: "AP DHILLON", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/excuses.webm", image: "excuses.jpeg" },
-    { title: "Cheques", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/cheq.webm", image: "cheq.jpeg" },
-    { title: "Still Rollin", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/Still%20Rollin.webm", image: "strlin.jpeg" },
-    { title: "Brown Munde", artist: "AP DHILLON", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/brownm.webm", image: "brownm.jpeg" },
-    { title: "We Rollin", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/welol.webm", image: "werlin.jpeg" },
-    { title: "295", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/295.weba", image: "295.jfif" },
-    { title: "Drippy", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/drippy.weba", image: "drippy.jfif" },
-    { title: "The Last Ride", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/lrd.weba", image: "lrd.jfif" },
-    { title: "Levels", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/level.webm", image: "level.jfif" },
-    { title: "Fuck Em All", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/fea.webm", image: "fea.jpg" },
-    { title: "Arjan valley mashup", artist: "SUZAN", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/am.webm", image: "am.jpeg" },
-    { title: "OG x 0 to 100", artist: "AFTERIGHT", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/og.webm", image: "og.jpeg" },
-    { title: "So high", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/sh.webm", image: "sh.jpeg" },
-    { title: "Brown rang", artist: "HONEY SINGH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/br.webm", image: "br.jpeg" },
-    { title: "Yalgaar ho", artist: "CARRY MINATI", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/yh.webm", image: "yh.jpeg" },
-    { title: "MVP", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/mvp.webm", image: "mvp.jpeg" },
-    { title: "You and me", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/ym.webm", image: "ym.jpeg" },
-    { title: "Be mine", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/bm.webm", image: "bm.jpg" }
-]
-;
-
-        let currentSongIndex = 0;
-        let isPlaying = false;
-        const audio = new Audio();
-
-        const playPauseButton = document.getElementById('play-pause-button');
-        const prevButton = document.getElementById('prev-button');
-        const nextButton = document.getElementById('next-button');
-        const progressBar = document.querySelector('.progress-bar');
-        const progressFill = document.getElementById('progress-fill');
-        const volumeSlider = document.getElementById('volume-slider');
-        const currentSongTitle = document.getElementById('current-song-title');
-        const currentSongArtist = document.getElementById('current-song-artist');
-        const currentSongImage = document.getElementById('current-song-image');
-
-        function loadSong(index) {
-            const song = songs[index];
-            audio.src = song.file;
-            currentSongTitle.textContent = song.title;
-            currentSongArtist.textContent = song.artist;
-            currentSongImage.src = song.image;
-        }
-
-        function playSong() {
-            isPlaying = true;
-            audio.play();
-            playPauseButton.innerHTML = '<i class="fas fa-pause"></i>';
-        }
-
-        function pauseSong() {
-            isPlaying = false;
-            audio.pause();
-            playPauseButton.innerHTML = '<i class="fas fa-play"></i>';
-        }
-
-        function prevSong() {
-            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-            loadSong(currentSongIndex);
-            if (isPlaying) playSong();
-        }
-
-        function nextSong() {
-            currentSongIndex = (currentSongIndex + 1) % songs.length;
-            loadSong(currentSongIndex);
-            if (isPlaying) playSong();
-        }
-
-        playPauseButton.addEventListener('click', () => isPlaying ? pauseSong() : playSong());
-        prevButton.addEventListener('click', prevSong);
-        nextButton.addEventListener('click', nextSong);
-
-        audio.addEventListener('timeupdate', () => {
-            const progress = (audio.currentTime / audio.duration) * 100;
-            progressFill.style.width = `${progress}%`;
-        });
-
-        progressBar.addEventListener('click', (e) => {
-            const progressWidth = progressBar.clientWidth;
-            const clickX = e.offsetX;
-            const duration = audio.duration;
-            
-            audio.currentTime = (clickX / progressWidth) * duration;
-        });
-
-        volumeSlider.addEventListener('input', (e) => {
-            audio.volume = e.target.value / 100;
-        });
-
-        function createPlaylistItem(song, index) {
-            return `
-                <div class="item" data-index="${index}">
-                    <img src="${song.image}" alt="${song.title}" />
-                    <div class="play">
-                        <span class="fa fa-play"></span>
-                    </div>
-                    <h4>${song.title}</h4>
-                    <p>${song.artist}</p>
+                        <a href="#"><li>
+                            <a href="#">Premium</a>
+                        </li>
+                        <li>
+                            <a href="#">Support</a>
+                        </li>
+                        <li>
+                            <a href="#">Download</a>
+                        </li>
+                        <li class="divider">|</li>
+                        <li><a href="#">Sign Up</a></li>
+                    </ul>
+                    <button type="button">Log In</button>
                 </div>
-            `;
-        }
-
-        function populatePlaylists() {
-            const focusPlaylist = document.getElementById('focus-playlist');
-            const spotifyPlaylist = document.getElementById('spotify-playlist');
-
-            songs.forEach((song, index) => {
-                const playlistItem = createPlaylistItem(song, index);
-                if (song.category === "Focus") {
-                    focusPlaylist.innerHTML += playlistItem;
-                } else if (song.category === "Spotify Playlists") {
-                    spotifyPlaylist.innerHTML += playlistItem;
-                }
+            </div>
+    
+            <div class="spotify-playlists">
+                <div id="artist-playlists">
+                    <!-- Artist playlists will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    
+        <div class="player">
+            <div class="song-info">
+                <img src="https://via.placeholder.com/60" alt="Current Song" id="current-song-image">
+                <div class="details">
+                    <h4 id="current-song-title">Song Title</h4>
+                    <p id="current-song-artist">Artist Name</p>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="prev-button"><i class="fas fa-step-backward"></i></button>
+                <button id="play-pause-button" class="play-pause"><i class="fas fa-play"></i></button>
+                <button id="next-button"><i class="fas fa-step-forward"></i></button>
+            </div>
+            <div class="progress-bar">
+                <div class="bar">
+                    <div class="fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            // Simulated song data (in a real app, this would come from a backend)
+            const songs = [
+                { title: "Babam bam", artist: "PARADOX", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/bb.webm", image: "bb.jpg" },
+                { title: "Kesaria", artist: "B PRAAK", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/tm.webm", image: "tm.jpeg" },
+                { title: "Daku", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/daku.webm", image: "daku.jpeg" },
+                { title: "Elevated", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/el.webm", image: "el.jpeg" },
+                { title: "12 Bande", artist: "VARINDAR BRAR", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/12.webm", image: "12.jpg" },
+                { title: "Baller", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/baller.webm", image: "ball.jpeg" },
+                { title: "Kingshit", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/kingshit.webm", image: "kshit.jpeg" },
+                { title: "Excuses", artist: "AP DHILLON", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/excuses.webm", image: "excuses.jpeg" },
+                { title: "Cheques", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/cheq.webm", image: "cheq.jpeg" },
+                { title: "Still Rollin", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/Still%20Rollin.webm", image: "strlin.jpeg" },
+                { title: "Brown Munde", artist: "AP DHILLON", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/brownm.webm", image: "brownm.jpeg" },
+                { title: "We Rollin", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/welol.webm", image: "werlin.jpeg" },
+                { title: "295", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/295.weba", image: "295.jfif" },
+                { title: "Drippy", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/drippy.weba", image: "drippy.jfif" },
+                { title: "The Last Ride", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/lrd.weba", image: "lrd.jfif" },
+                { title: "Levels", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/level.webm", image: "level.jfif" },
+                { title: "Fuck Em All", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/fea.webm", image: "fea.jpg" },
+                { title: "Arjan valley mashup", artist: "SUZAN", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/am.webm", image: "am.jpeg" },
+                { title: "OG x 0 to 100", artist: "AFTERIGHT", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/og.webm", image: "og.jpeg" },
+                { title: "So high", artist: "LATE SIDHU MOOSE WALA", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/sh.webm", image: "sh.jpeg" },
+                { title: "Brown rang", artist: "HONEY SINGH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/br.webm", image: "br.jpeg" },
+                { title: "Yalgaar ho", artist: "CARRY MINATI", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/yh.webm", image: "yh.jpeg" },
+                { title: "MVP", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/mvp.webm", image: "mvp.jpeg" },
+                { title: "You and me", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/ym.webm", image: "ym.jpeg" },
+                { title: "Be mine", artist: "SHUBH", file: "https://shashwat-coding.github.io/Shashwat-CODER-Music/bm.webm", image: "bm.jpg" }
+            ];
+    
+            let currentSongIndex = 0;
+            let isPlaying = false;
+            const audio = new Audio();
+    
+            const playPauseButton = document.getElementById('play-pause-button');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+            const progressBar = document.querySelector('.progress-bar');
+            const progressFill = document.getElementById('progress-fill');
+            const currentSongTitle = document.getElementById('current-song-title');
+            const currentSongArtist = document.getElementById('current-song-artist');
+            const currentSongImage = document.getElementById('current-song-image');
+    
+            function loadSong(index) {
+                const song = songs[index];
+                audio.src = song.file;
+                currentSongTitle.textContent = song.title;
+                currentSongArtist.textContent = song.artist;
+                currentSongImage.src = song.image;
+            }
+    
+            function playSong() {
+                isPlaying = true;
+                audio.play();
+                playPauseButton.innerHTML = '<i class="fas fa-pause"></i>';
+            }
+    
+            function pauseSong() {
+                isPlaying = false;
+                audio.pause();
+                playPauseButton.innerHTML = '<i class="fas fa-play"></i>';
+            }
+    
+            function prevSong() {
+                currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+                loadSong(currentSongIndex);
+                if (isPlaying) playSong();
+            }
+    
+            function nextSong() {
+                currentSongIndex = (currentSongIndex + 1) % songs.length;
+                loadSong(currentSongIndex);
+                if (isPlaying) playSong();
+            }
+    
+            playPauseButton.addEventListener('click', () => isPlaying ? pauseSong() : playSong());
+            prevButton.addEventListener('click', prevSong);
+            nextButton.addEventListener('click', nextSong);
+    
+            audio.addEventListener('timeupdate', () => {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressFill.style.width = `${progress}%`;
             });
-        }
-
-        function categorizeTracks() {
-            const artistPlaylists = document.getElementById('artist-playlists');
-            const artistMap = {};
-
-            songs.forEach(song => {
-                if (!artistMap[song.artist]) {
-                    artistMap[song.artist] = [];
-                }
-                artistMap[song.artist].push(song);
+    
+            progressBar.addEventListener('click', (e) => {
+                const progressWidth = progressBar.clientWidth;
+                const clickX = e.offsetX;
+                const duration = audio.duration;
+    
+                audio.currentTime = (clickX / progressWidth) * duration;
             });
-
-            for (const [artist, tracks] of Object.entries(artistMap)) {
-                const artistSection = document.createElement('div');
-                artistSection.innerHTML = `
-                    <h3>${artist}</h3>
-                    <div class="list">
-                        ${tracks.map((track, index) => createPlaylistItem(track, songs.indexOf(track))).join('')}
+    
+            function createPlaylistItem(song, index) {
+                return `
+                    <div class="item" data-index="${index}">
+                        <img src="${song.image}" alt="${song.title}" />
+                        <div class="play">
+                            <span class="fa fa-play"></span>
+                        </div>
+                        <h4>${song.title}</h4>
+                        <p>${song.artist}</p>
                     </div>
                 `;
-                artistPlaylists.appendChild(artistSection);
             }
-        }
-
-        function addClickListeners() {
-            document.querySelectorAll('.item').forEach(item => {
-                item.addEventListener('click', () => {
-                    currentSongIndex = parseInt(item.dataset.index);
-                    loadSong(currentSongIndex);
-                    playSong();
+    
+            function categorizeTracks() {
+                const artistPlaylists = document.getElementById('artist-playlists');
+                const artistMap = {};
+    
+                songs.forEach(song => {
+                    if (!artistMap[song.artist]) {
+                        artistMap[song.artist] = [];
+                    }
+                    artistMap[song.artist].push(song);
                 });
+    
+                for (const [artist, tracks] of Object.entries(artistMap)) {
+                    const artistSection = document.createElement('div');
+                    artistSection.innerHTML = `
+                        <h2 style="color: white;">${artist}</h2>
+                        <div class="list">
+                            ${tracks.map((track, index) => createPlaylistItem(track, songs.indexOf(track))).join('')}
+                        </div>
+                    `;
+                    artistPlaylists.appendChild(artistSection);
+                }
+            }
+    
+            function addClickListeners() {
+                document.querySelectorAll('.item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        currentSongIndex = parseInt(item.dataset.index);
+                        loadSong(currentSongIndex);
+                        playSong();
+                    });
+                });
+            }
+    
+            // Search functionality
+            const searchLink = document.getElementById('search-link');
+            const searchBar = document.querySelector('.search-bar');
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.querySelector('.search-results');
+    
+            searchLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                searchBar.style.display = searchBar.style.display === 'none' ? 'block' : 'none';
             });
-        }
-
-        // Initialize the player
-        loadSong(currentSongIndex);
-        populatePlaylists();
-        categorizeTracks();
-        addClickListeners();
-    </script>
-</body>
-</html>
+    
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredSongs = songs.filter(song => 
+                    song.title.toLowerCase().includes(searchTerm) || 
+                    song.artist.toLowerCase().includes(searchTerm)
+                );
+    
+                searchResults.innerHTML = filteredSongs.map((song, index) => `
+                    <div class="item" data-index="${songs.indexOf(song)}">
+                        <h4>${song.title}</h4>
+                        <p>${song.artist}</p>
+                    </div>
+                `).join('');
+    
+                addClickListeners();
+            });
+    
+            // Initialize the player
+            loadSong(currentSongIndex);
+            categorizeTracks();
+            addClickListeners();
+        </script>
+    </body>
+    </html>
